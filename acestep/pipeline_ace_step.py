@@ -1511,14 +1511,26 @@ class ACEStepPipeline:
         s = time.perf_counter()
 
         texts = [prompt]
+        get_embeddings_start = time.perf_counter()
         encoder_text_hidden_states, text_attention_mask = self.get_text_embeddings(texts)
+        get_embeddings_end = time.perf_counter()
+        logger.info(f"Get text embeddings: {get_embeddings_start - get_embeddings_end} seconds")
+        hidden_states_start = time.perf_counter()
         encoder_text_hidden_states = encoder_text_hidden_states.repeat(batch_size, 1, 1)
+        hidden_states_end = time.perf_counter()
+        logger.info(f"Hidden states: {hidden_states_end - hidden_states_start} seconds")
+        attention_mask_start = time.perf_counter()
         text_attention_mask = text_attention_mask.repeat(batch_size, 1)
+        attention_mask_end = time.perf_counter()
+        logger.info(f"Text attention mask: {attention_mask_end - attention_mask_start} seconds")
 
         encoder_text_hidden_states_null = None
         if use_erg_tag:
+            erg_tag_start = time.perf_counter()
             encoder_text_hidden_states_null = self.get_text_embeddings_null(texts)
             encoder_text_hidden_states_null = encoder_text_hidden_states_null.repeat(batch_size, 1, 1)
+            erg_tag_end = time.perf_counter()
+            logger.info(f"ERG Tag: {erg_tag_end - erg_tag_start} seconds")
 
         # not support for released checkpoint
         speaker_embeds = torch.zeros(batch_size, 512).to(self.device).to(self.dtype)
