@@ -137,7 +137,7 @@ class FastACEStepPipeline(ACEStepPipeline):
 
 
 def warmup_and_compile_models(
-    checkpoint_dir=None,
+    checkpoint_dir='',
     compiled_models_dir="/tmp/compiled_models",
     device_id="0",
     dtype="bfloat16",
