@@ -185,21 +185,21 @@ def warmup_and_compile_models(
         dummy_params = (
             "wav",  # format
             10.0,   # audio_duration
-            "test music",  # prompt
-            "test lyrics",  # lyrics
+            "ambient",  # prompt
+            "[instrumental]",  # lyrics
             20,     # infer_step
             3.0,    # guidance_scale
             "euler",  # scheduler_type
-            "cfg",  # cfg_type
+            "apg",  # cfg_type
             1.0,    # omega_scale
             "42",   # actual_seeds
             0.5,    # guidance_interval
-            0.1,    # guidance_interval_decay
-            1.0,    # min_guidance_scale
+            0.0,    # guidance_interval_decay
+            3.0,    # min_guidance_scale
             True,   # use_erg_tag
             True,   # use_erg_lyric
             True,   # use_erg_diffusion
-            "10,15",  # oss_steps
+            None,  # oss_steps
             0.0,    # guidance_scale_text
             0.0,    # guidance_scale_lyric
         )
