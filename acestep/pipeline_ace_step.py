@@ -1489,15 +1489,26 @@ class ACEStepPipeline:
 
         start_time = time.time()
 
+        s = time.perf_counter()
+
         random_generators, actual_seeds = self.set_seeds(batch_size, manual_seeds)
         retake_random_generators, actual_retake_seeds = self.set_seeds(
             batch_size, retake_seeds
         )
+        e = time.perf_counter()
+        logger.info(f"Random seeds: {e - s} seconds")
+        
+        s = time.perf_counter()
 
         if isinstance(oss_steps, str) and len(oss_steps) > 0:
             oss_steps = list(map(int, oss_steps.split(",")))
         else:
             oss_steps = []
+
+        e = time.perf_counter()
+        logger.info(f"OSS steps: {e - s} seconds")
+
+        s = time.perf_counter()
 
         texts = [prompt]
         encoder_text_hidden_states, text_attention_mask = self.get_text_embeddings(texts)
@@ -1512,6 +1523,9 @@ class ACEStepPipeline:
         # not support for released checkpoint
         speaker_embeds = torch.zeros(batch_size, 512).to(self.device).to(self.dtype)
 
+        e = time.perf_counter()
+        logger.info(f"Text embeddings: {e - s} seconds")
+        s = time.perf_counter()
         # 6 lyric
         lyric_token_idx = torch.tensor([0]).repeat(batch_size, 1).to(self.device).long()
         lyric_mask = torch.tensor([0]).repeat(batch_size, 1).to(self.device).long()
@@ -1530,6 +1544,8 @@ class ACEStepPipeline:
                 .to(self.device)
                 .repeat(batch_size, 1)
             )
+        e = time.perf_counter()
+        logger.info(f"Lyrics: {e - s} seconds")
 
         if audio_duration <= 0:
             audio_duration = random.uniform(30.0, 240.0)
